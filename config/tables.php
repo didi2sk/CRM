@@ -3,7 +3,7 @@
 // Pretypovanie: int | string | bool | decimal | datetime | json
 // Casy sa ukladaju v UTC (Caflou ich posiela s offsetom, napr. +02:00).
 // Stlpec `id` je vzdy primarny kluc. Stlpce `deleted_in_source` a `synced_at` sa doplnaju automaticky.
-return [
+$tables = [
     'companies' => [
         'table' => 'companies',
         'columns' => [
@@ -60,3 +60,88 @@ return [
         'indexes' => ['id_num', 'name', 'trash'],
     ],
 ];
+
+// Doklady: ponuky, objednavky, zalohove faktury, faktury, dodacie listy... (rozlisuje `kind`).
+// Nazov stlpca = kluc v JSON. Polozky dokladu (riadky) vzorka neobsahuje - riesime samostatne.
+$S = fn(int $n = 255) => "VARCHAR($n) NULL";
+$spec = [
+    'id' => ['BIGINT UNSIGNED NOT NULL', 'int'],
+    'kind' => [$S(32), 'string'], 'global_kind' => [$S(32), 'string'],
+    'number' => [$S(64), 'string'], 'counter' => ['INT NULL', 'int'],
+    'name' => [$S(), 'string'], 'name_with_number' => [$S(512), 'string'],
+    'payment_type' => [$S(32), 'string'],
+    'numeric_row_id' => ['BIGINT UNSIGNED NULL', 'int'], 'numeric_row_name' => [$S(), 'string'],
+    'numeric_row_format' => [$S(64), 'string'],
+    'bank_account_id' => ['BIGINT UNSIGNED NULL', 'int'], 'user_id' => ['BIGINT UNSIGNED NULL', 'int'],
+    'description' => ['MEDIUMTEXT NULL', 'string'], 'text_before' => ['MEDIUMTEXT NULL', 'string'],
+    'text_after' => ['MEDIUMTEXT NULL', 'string'], 'note' => ['TEXT NULL', 'string'],
+    'record_reason' => ['TEXT NULL', 'string'],
+    'date_of_issue' => ['DATE NULL', 'date'], 'date_of_tax' => ['DATE NULL', 'date'],
+    'date_of_payment' => ['DATE NULL', 'date'], 'date_of_validity' => ['DATE NULL', 'date'],
+    'payment_date' => ['DATE NULL', 'date'], 'signature_date' => ['DATE NULL', 'date'],
+    'variable_symbol' => [$S(64), 'string'], 'constant_symbol' => [$S(64), 'string'],
+    'number_of_order' => [$S(64), 'string'], 'vendor_number' => [$S(64), 'string'],
+    'currency' => [$S(8), 'string'], 'locale' => [$S(16), 'string'],
+    'exchange_rate' => ['DECIMAL(18,6) NULL', 'decimal'],
+    'manual_exchange_rate' => ['TINYINT(1) NULL', 'bool'], 'show_exchange_rate' => ['TINYINT(1) NULL', 'bool'],
+    'total_cache' => ['DECIMAL(18,2) NULL', 'decimal'], 'vat_cache' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'total_vat_cache' => ['DECIMAL(18,2) NULL', 'decimal'], 'native_vat_cache' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'native_total_cache' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'native_total_vat_cache' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'amount_due' => ['DECIMAL(18,2) NULL', 'decimal'], 'total_manual' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'vat_manual' => ['DECIMAL(18,2) NULL', 'decimal'], 'profit_cache' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'paid' => ['TINYINT(1) NULL', 'bool'], 'income' => ['TINYINT(1) NULL', 'bool'],
+    'outcome' => ['TINYINT(1) NULL', 'bool'], 'reverse_charge' => ['TINYINT(1) NULL', 'bool'],
+    'autorounding' => ['TINYINT(1) NULL', 'bool'], 'rounding_type' => [$S(32), 'string'],
+    'project_id' => ['BIGINT UNSIGNED NULL', 'int'], 'task_id' => ['BIGINT UNSIGNED NULL', 'int'],
+    'project_name' => [$S(), 'string'], 'project_url' => [$S(512), 'string'],
+    'invoice_status_id' => ['BIGINT UNSIGNED NULL', 'int'], 'invoice_status_name' => [$S(), 'string'],
+    'user_name' => [$S(), 'string'], 'company_name' => [$S(), 'string'],
+    'repeater_id' => ['BIGINT UNSIGNED NULL', 'int'], 'template' => ['TINYINT(1) NULL', 'bool'],
+    'concept' => ['TINYINT(1) NULL', 'bool'], 'approved' => ['TINYINT(1) NULL', 'bool'],
+    'tax_receipt' => ['TINYINT(1) NULL', 'bool'], 'storno' => ['TINYINT(1) NULL', 'bool'],
+    'transfers' => ['TINYINT(1) NULL', 'bool'], 'is_locked' => ['TINYINT(1) NULL', 'bool'],
+    'has_reminders' => ['TINYINT(1) NULL', 'bool'], 'following' => ['TINYINT(1) NULL', 'bool'],
+    'email_status' => [$S(64), 'string'], 'esign_status' => [$S(64), 'string'], 'sign_status' => [$S(64), 'string'],
+    'signed_pdf_url' => [$S(1024), 'string'], 'pdf_url' => [$S(1024), 'string'], 'url' => [$S(512), 'string'],
+    'delivery_address_id' => ['BIGINT UNSIGNED NULL', 'int'],
+    'online_payment_account_id' => ['BIGINT UNSIGNED NULL', 'int'],
+    'allow_online_payment' => ['TINYINT(1) NULL', 'bool'], 'peppol_import' => ['TINYINT(1) NULL', 'bool'],
+    'invoice_company_uuid' => [$S(64), 'string'],
+    'trash' => ['TINYINT(1) NULL', 'bool'], 'trashed_at' => ['DATETIME NULL', 'datetime'],
+    'created_at' => ['DATETIME NULL', 'datetime'], 'updated_at' => ['DATETIME NULL', 'datetime'],
+    'tags' => ['JSON NULL', 'json'], 'privacy' => ['JSON NULL', 'json'],
+    'invoice_ids' => ['JSON NULL', 'json'], 'proforma_ids' => ['JSON NULL', 'json'],
+    'offer_ids' => ['JSON NULL', 'json'], 'order_ids' => ['JSON NULL', 'json'],
+    'delivery_ids' => ['JSON NULL', 'json'], 'tax_receipt_ids' => ['JSON NULL', 'json'],
+    'storno_ids' => ['JSON NULL', 'json'], 'invoice_message_ids' => ['JSON NULL', 'json'],
+];
+// dodavatel (from_*) a odberatel (to_*)
+foreach (['from', 'to'] as $p) {
+    $spec += [
+        "{$p}_company_id" => ['BIGINT UNSIGNED NULL', 'int'], "{$p}_company_name" => [$S(), 'string'],
+        "{$p}_street" => [$S(), 'string'], "{$p}_zip" => [$S(32), 'string'], "{$p}_city" => [$S(), 'string'],
+        "{$p}_country" => [$S(8), 'string'], "{$p}_id_num" => [$S(32), 'string'],
+        "{$p}_tax_num" => [$S(32), 'string'], "{$p}_id_tax_num" => [$S(32), 'string'],
+        "{$p}_email" => [$S(), 'string'], "{$p}_phone" => [$S(64), 'string'],
+        "{$p}_website" => [$S(512), 'string'], "{$p}_file_number" => [$S(), 'string'],
+        "{$p}_first_name" => [$S(), 'string'], "{$p}_last_name" => [$S(), 'string'],
+        "{$p}_issuer_name" => [$S(), 'string'], "{$p}_vat_payer" => ['TINYINT(1) NULL', 'bool'],
+    ];
+}
+$spec += [
+    'to_peppol_id' => [$S(), 'string'], 'to_company_url' => [$S(512), 'string'],
+    // vlastne stlpce z Caflou (custom_column_*) sa zbieraju do jedneho JSON-u
+    'custom_fields' => ['JSON NULL', 'prefix_json:custom_column_'],
+];
+$cols = [];
+foreach ($spec as $name => [$type, $cast]) {
+    $cols[$name] = [$type, $name, $cast];
+}
+$tables['invoices'] = [
+    'table' => 'invoices',
+    'columns' => $cols,
+    'indexes' => ['kind', 'number', 'project_id', 'to_company_id', 'date_of_issue', 'trash'],
+];
+
+return $tables;

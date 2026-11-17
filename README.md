@@ -30,7 +30,7 @@ https://tvoja-domena/run.php?key=RUN_KEY&entity=tasks      # len vybrane (oddele
 Pozor na casovy limit hostingu - pri velkej zalohe spustaj entitu po entite alebo pouzi cron.
 
 ## Normalizovane tabulky (interne pouzitie)
-Definicie su v `config/tables.php` (zatial `companies`, dalsie entity pridavame postupne).
+Definicie su v `config/tables.php` (zatial `companies`, `invoices`; dalsie entity pridavame postupne).
 ```bash
 php bin/normalize.php --print-sql     # iba vypise CREATE TABLE
 php bin/normalize.php --init-tables   # vytvori tabulky

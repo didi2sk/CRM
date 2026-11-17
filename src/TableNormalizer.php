@@ -28,6 +28,17 @@ final class TableNormalizer
     {
         $row = [];
         foreach ($cfg['columns'] as $name => [, $key, $cast]) {
+            if (str_starts_with($cast, 'prefix_json:')) {
+                $prefix = substr($cast, 12);
+                $extra = [];
+                foreach ($item as $k => $val) {
+                    if (str_starts_with((string) $k, $prefix)) {
+                        $extra[$k] = $val;
+                    }
+                }
+                $row[$name] = $extra ? json_encode($extra, JSON_UNESCAPED_UNICODE) : null;
+                continue;
+            }
             $row[$name] = self::cast($item[$key] ?? null, $cast);
         }
         return $row;
@@ -41,6 +52,8 @@ final class TableNormalizer
         switch ($cast) {
             case 'int':
                 return $v === '' ? null : (int) $v;
+            case 'date':
+                return $v === '' ? null : substr((string) $v, 0, 10);
             case 'bool':
                 return $v ? 1 : 0;
             case 'decimal':
