@@ -213,4 +213,57 @@ $tables['users'] = [
     'indexes' => ['email', 'active'],
 ];
 
+// Ulohy
+$B = 'TINYINT(1) NULL';
+$D2 = 'DECIMAL(18,2) NULL';
+$H = 'DECIMAL(12,2) NULL';
+$ID = 'BIGINT UNSIGNED NULL';
+$T = [
+    'id' => ['BIGINT UNSIGNED NOT NULL', 'int'],
+    'name' => [$S(512), 'string'], 'description' => ['MEDIUMTEXT NULL', 'string'],
+    'start_time' => ['DATETIME NULL', 'datetime'], 'end_time' => ['DATETIME NULL', 'datetime'],
+    'finished' => [$B, 'bool'], 'finished_at' => ['DATETIME NULL', 'datetime'],
+    'progress' => ['DECIMAL(8,2) NULL', 'decimal'], 'get_progress_old' => [$S(64), 'string'],
+    'get_progress' => [$S(64), 'string'], 'get_todos_stats' => [$S(64), 'string'],
+    'priority' => [$S(32), 'string'], 'task_priority_id' => [$ID, 'int'], 'task_priority_name' => [$S(), 'string'],
+    'task_type_id' => [$ID, 'int'], 'task_status_id' => [$ID, 'int'],
+    'project_id' => [$ID, 'int'], 'project_name' => [$S(), 'string'], 'project_url' => [$S(512), 'string'],
+    'project_with_company_labeled' => [$S(512), 'string'],
+    'company_id' => [$ID, 'int'], 'company_name' => [$S(), 'string'], 'company_url' => [$S(512), 'string'],
+    'user_id' => [$ID, 'int'], 'target_user_id' => [$ID, 'int'], 'user_ids' => ['JSON NULL', 'json'],
+    'currency' => [$S(8), 'string'],
+    'planned_hours' => [$H, 'decimal'], 'planned_tracked_time' => [$H, 'decimal'],
+    'total_hours_helper' => [$H, 'decimal'], 'tracked_time_helper' => [$H, 'decimal'],
+    'planned_incomes' => [$D2, 'decimal'], 'native_planned_incomes' => [$D2, 'decimal'],
+    'planned_expenses' => [$D2, 'decimal'], 'native_planned_expenses' => [$D2, 'decimal'],
+    'total_incomes_helper' => [$D2, 'decimal'], 'total_expenses_helper' => [$D2, 'decimal'],
+    'earnings' => [$D2, 'decimal'], 'earnings_price' => [$D2, 'decimal'],
+    'budget_progress' => ['DECIMAL(10,2) NULL', 'decimal'], 'incomes_progress' => ['DECIMAL(10,2) NULL', 'decimal'],
+    'expenses_progress' => ['DECIMAL(10,2) NULL', 'decimal'], 'hours_progress' => ['DECIMAL(10,2) NULL', 'decimal'],
+    'position' => ['INT NULL', 'int'], 'wbs_tree_position' => [$S(64), 'string'],
+    'has_unfinished_to_dos' => [$B, 'bool'],
+    'template' => [$B, 'bool'], 'inherited_template' => [$B, 'bool'],
+    'repeatable' => [$B, 'bool'], 'repeater_id' => [$ID, 'int'],
+    'repeat_kind' => [$S(32), 'string'], 'repeat_count' => ['INT NULL', 'int'],
+    'repeat_weekdays' => ['JSON NULL', 'json'], 'repeat_monthdays' => ['JSON NULL', 'json'],
+    'repeat_end' => [$S(32), 'string'], 'repeat_end_date' => ['DATE NULL', 'date'],
+    'repeat_end_count' => ['INT NULL', 'int'], 'repeat_from' => ['DATE NULL', 'date'],
+    'address' => ['JSON NULL', 'json'],
+    'trash' => [$B, 'bool'], 'trashed_at' => ['DATETIME NULL', 'datetime'],
+    'following' => [$B, 'bool'], 'comment_email' => [$S(), 'string'],
+    'privacy' => ['JSON NULL', 'json'], 'tags' => ['JSON NULL', 'json'], 'url' => [$S(512), 'string'],
+    'created_at' => ['DATETIME NULL', 'datetime'], 'updated_at' => ['DATETIME NULL', 'datetime'],
+    'last_update' => ['DATETIME NULL', 'datetime'],
+    'custom_fields' => ['JSON NULL', 'prefix_json:custom_column_'],
+];
+$cols = [];
+foreach ($T as $name => [$type, $cast]) {
+    $cols[$name] = [$type, $name, $cast];
+}
+$tables['tasks'] = [
+    'table' => 'tasks',
+    'columns' => $cols,
+    'indexes' => ['project_id', 'company_id', 'user_id', 'finished', 'end_time', 'trash'],
+];
+
 return $tables;
