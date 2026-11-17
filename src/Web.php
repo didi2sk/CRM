@@ -49,7 +49,7 @@ final class Web
         header('Referrer-Policy: same-origin');
         $nav = '';
         if ($user !== null) {
-            $items = ['' => 'Prehľad', 'companies' => 'Firmy', 'projects' => 'Projekty', 'tasks' => 'Úlohy', 'invoices' => 'Doklady'];
+            $items = ['' => 'Prehľad', 'companies' => 'Firmy', 'contacts' => 'Kontakty', 'projects' => 'Projekty', 'tasks' => 'Úlohy', 'invoices' => 'Doklady'];
             foreach ($items as $k => $label) {
                 $nav .= '<a href="' . self::url(['p' => $k]) . '"' . ($k === $active ? ' class="on"' : '') . '>' . $label . '</a>';
             }

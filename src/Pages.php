@@ -28,6 +28,8 @@ final class Pages
                 'filters' => [],
                 'refs' => ['user_id' => 'users', 'target_user_id' => 'users'],
                 'related' => [
+                    ['Kontakty', 'contacts', 'company_id', 'contacts', 'name ASC',
+                        ['name' => 'Meno', 'contact_type_name' => 'Funkcia', 'email' => 'E-mail', 'mobile' => 'Mobil']],
                     ['Projekty', 'projects', 'company_id', 'projects', 'start_date DESC',
                         ['name' => 'Projekt', 'project_status_name' => 'Stav', 'start_date' => 'Od', 'end_date' => 'Do']],
                     ['Doklady', 'invoices', 'to_company_id', 'invoices', 'date_of_issue DESC',
@@ -35,6 +37,16 @@ final class Pages
                     ['Úlohy', 'tasks', 'company_id', 'tasks', 'end_time DESC',
                         ['name' => 'Úloha', 'project_name' => 'Projekt', 'end_time' => 'Termín', 'finished' => 'Hotová']],
                 ],
+            ],
+            'contacts' => [
+                'title' => 'Kontakty', 'one' => 'name', 'order' => 'name ASC',
+                'cols' => ['name' => 'Meno', 'company_name' => 'Firma', 'contact_type_name' => 'Funkcia', 'email' => 'E-mail', 'mobile' => 'Mobil', 'phone' => 'Telefón'],
+                'search' => ['name', 'email', 'mobile', 'phone', 'company_name'],
+                'filters' => [
+                    'type' => ['Funkcia', 'distinct', 'contact_type_name'],
+                ],
+                'refs' => ['company_id' => 'companies'],
+                'related' => [],
             ],
             'projects' => [
                 'title' => 'Projekty', 'one' => 'name', 'order' => 'created_at DESC',
@@ -83,6 +95,7 @@ final class Pages
         $one = fn(string $sql) => (int) $this->db->query($sql)->fetchColumn();
         $stats = [
             ['Firmy', $one('SELECT COUNT(*) FROM companies WHERE trash = 0'), 'companies'],
+            ['Kontakty', $one('SELECT COUNT(*) FROM contacts WHERE trash = 0'), 'contacts'],
             ['Otvorené projekty', $one('SELECT COUNT(*) FROM projects WHERE trash = 0 AND finished = 0'), 'projects'],
             ['Otvorené úlohy', $one('SELECT COUNT(*) FROM tasks WHERE trash = 0 AND finished = 0'), 'tasks'],
             ['Úlohy po termíne', $one('SELECT COUNT(*) FROM tasks WHERE trash = 0 AND finished = 0 AND end_time < UTC_TIMESTAMP()'), 'tasks&done=late'],

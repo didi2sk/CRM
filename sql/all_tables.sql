@@ -405,3 +405,51 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   KEY `idx_trash` (`trash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `contacts` (
+  `id` BIGINT UNSIGNED NOT NULL,
+  `name` VARCHAR(255) NULL,
+  `email` VARCHAR(255) NULL,
+  `phone` VARCHAR(64) NULL,
+  `mobile` VARCHAR(64) NULL,
+  `street` VARCHAR(255) NULL,
+  `zip` VARCHAR(32) NULL,
+  `city` VARCHAR(255) NULL,
+  `country` VARCHAR(8) NULL,
+  `note` TEXT NULL,
+  `record_reason` TEXT NULL,
+  `website` VARCHAR(512) NULL,
+  `website_url` VARCHAR(512) NULL,
+  `linkedin` VARCHAR(512) NULL,
+  `linkedin_url` VARCHAR(512) NULL,
+  `facebook` VARCHAR(512) NULL,
+  `facebook_url` VARCHAR(512) NULL,
+  `company_id` BIGINT UNSIGNED NULL,
+  `company_name` VARCHAR(255) NULL,
+  `company_url` VARCHAR(512) NULL,
+  `contact_type_id` BIGINT UNSIGNED NULL,
+  `contact_type_name` VARCHAR(255) NULL,
+  `trash` TINYINT(1) NULL,
+  `trashed_at` DATETIME NULL,
+  `privacy` JSON NULL,
+  `tags` JSON NULL,
+  `url` VARCHAR(512) NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
+  `custom_fields` JSON NULL,
+  `deleted_in_source` TINYINT(1) NOT NULL DEFAULT 0,
+  `synced_at` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_company_id` (`company_id`),
+  KEY `idx_name` (`name`(191)),
+  KEY `idx_email` (`email`(191)),
+  KEY `idx_trash` (`trash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3) Pouzivatelia CRM
+CREATE TABLE IF NOT EXISTS crm_users (
+    id            INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    username      VARCHAR(64)  NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at    DATETIME     NOT NULL,
+    UNIQUE KEY uq_username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

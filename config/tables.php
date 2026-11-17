@@ -268,5 +268,32 @@ $tables['tasks'] = [
     'indexes' => ['project_id', 'company_id', 'user_id', 'finished', 'end_time', 'trash'],
 ];
 
+// Kontakty (osoby vo firmach)
+$C = [
+    'id' => ['BIGINT UNSIGNED NOT NULL', 'int'],
+    'name' => [$S(), 'string'],
+    'email' => [$S(), 'string'], 'phone' => [$S(64), 'string'], 'mobile' => [$S(64), 'string'],
+    'street' => [$S(), 'string'], 'zip' => [$S(32), 'string'], 'city' => [$S(), 'string'], 'country' => [$S(8), 'string'],
+    'note' => ['TEXT NULL', 'string'], 'record_reason' => ['TEXT NULL', 'string'],
+    'website' => [$S(512), 'string'], 'website_url' => [$S(512), 'string'],
+    'linkedin' => [$S(512), 'string'], 'linkedin_url' => [$S(512), 'string'],
+    'facebook' => [$S(512), 'string'], 'facebook_url' => [$S(512), 'string'],
+    'company_id' => ['BIGINT UNSIGNED NULL', 'int'], 'company_name' => [$S(), 'string'], 'company_url' => [$S(512), 'string'],
+    'contact_type_id' => ['BIGINT UNSIGNED NULL', 'int'], 'contact_type_name' => [$S(), 'string'],
+    'trash' => ['TINYINT(1) NULL', 'bool'], 'trashed_at' => ['DATETIME NULL', 'datetime'],
+    'privacy' => ['JSON NULL', 'json'], 'tags' => ['JSON NULL', 'json'], 'url' => [$S(512), 'string'],
+    'created_at' => ['DATETIME NULL', 'datetime'], 'updated_at' => ['DATETIME NULL', 'datetime'],
+    'custom_fields' => ['JSON NULL', 'prefix_json:custom_column_'],
+];
+$cols = [];
+foreach ($C as $name => [$type, $cast]) {
+    $cols[$name] = [$type, $name, $cast];
+}
+$tables['contacts'] = [
+    'table' => 'contacts',
+    'columns' => $cols,
+    'indexes' => ['company_id', 'name', 'email', 'trash'],
+];
+
 return $tables;
 })();

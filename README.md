@@ -39,7 +39,7 @@ Data cita z normalizovanych tabuliek (po `sync.php` + `normalize.php`). V Caflou
 3. Otvor `https://domena/` a prihlas sa. Pouzivajte HTTPS.
 
 ## Normalizovane tabulky (interne pouzitie)
-Definicie su v `config/tables.php` (zatial `companies`, `invoices`, `projects`, `users`, `tasks`; dalsie entity pridavame postupne).
+Definicie su v `config/tables.php` (zatial `companies`, `invoices`, `projects`, `users`, `tasks`, `contacts`; dalsie entity pridavame postupne).
 ```bash
 php bin/normalize.php --print-sql     # iba vypise CREATE TABLE
 php bin/normalize.php --init-tables   # vytvori tabulky
