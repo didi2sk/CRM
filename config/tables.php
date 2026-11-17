@@ -195,4 +195,21 @@ $tables['projects'] = [
     'indexes' => ['company_id', 'project_status_id', 'start_date', 'trash'],
 ];
 
+// Pouzivatelia (zamestnanci) Caflou
+$U = [
+    'id' => ['BIGINT UNSIGNED NOT NULL', 'int'],
+    'name' => [$S(), 'string'], 'first_name' => [$S(), 'string'], 'last_name' => [$S(), 'string'],
+    'short_name' => [$S(), 'string'], 'email' => [$S(), 'string'], 'avatar_url' => [$S(1024), 'string'],
+    'fictive' => ['TINYINT(1) NULL', 'bool'], 'active' => ['TINYINT(1) NULL', 'bool'],
+];
+$cols = [];
+foreach ($U as $name => [$type, $cast]) {
+    $cols[$name] = [$type, $name, $cast];
+}
+$tables['users'] = [
+    'table' => 'users',
+    'columns' => $cols,
+    'indexes' => ['email', 'active'],
+];
+
 return $tables;
