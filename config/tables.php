@@ -144,4 +144,55 @@ $tables['invoices'] = [
     'indexes' => ['kind', 'number', 'project_id', 'to_company_id', 'date_of_issue', 'trash'],
 ];
 
+// Projekty
+$P = [
+    'id' => ['BIGINT UNSIGNED NOT NULL', 'int'],
+    'name' => [$S(), 'string'], 'description' => ['MEDIUMTEXT NULL', 'string'],
+    'priority' => [$S(32), 'string'], 'record_reason' => ['TEXT NULL', 'string'],
+    'order_number' => [$S(64), 'string'], 'currency' => [$S(8), 'string'],
+    'planned_incomes' => ['DECIMAL(18,2) NULL', 'decimal'], 'native_planned_incomes' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'planned_expenses' => ['DECIMAL(18,2) NULL', 'decimal'], 'native_planned_expenses' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'planned_hours' => ['DECIMAL(12,2) NULL', 'decimal'], 'hours' => ['DECIMAL(12,2) NULL', 'decimal'],
+    'planned_tracked_time' => ['DECIMAL(12,2) NULL', 'decimal'],
+    'tracked_time_helper' => ['DECIMAL(12,2) NULL', 'decimal'], 'total_hours_helper' => ['DECIMAL(12,2) NULL', 'decimal'],
+    'total_incomes_helper' => ['DECIMAL(18,2) NULL', 'decimal'], 'total_expenses_helper' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'earnings' => ['DECIMAL(18,2) NULL', 'decimal'], 'earnings_price' => ['DECIMAL(18,2) NULL', 'decimal'],
+    'progress' => ['DECIMAL(8,2) NULL', 'decimal'], 'budget_progress' => ['DECIMAL(10,2) NULL', 'decimal'],
+    'incomes_progress' => ['DECIMAL(10,2) NULL', 'decimal'], 'expenses_progress' => ['DECIMAL(10,2) NULL', 'decimal'],
+    'hours_progress' => ['DECIMAL(10,2) NULL', 'decimal'],
+    'get_progress' => [$S(64), 'string'], 'get_tasks_stats' => [$S(64), 'string'],
+    'get_milestones_stats' => [$S(64), 'string'], 'get_companies_stats' => [$S(64), 'string'],
+    'start_date' => ['DATE NULL', 'date'], 'end_date' => ['DATE NULL', 'date'],
+    'finished' => ['TINYINT(1) NULL', 'bool'],
+    'project_type_id' => ['BIGINT UNSIGNED NULL', 'int'], 'project_type_name' => [$S(), 'string'],
+    'project_status_id' => ['BIGINT UNSIGNED NULL', 'int'], 'project_status_name' => [$S(), 'string'],
+    'project_priority_id' => ['BIGINT UNSIGNED NULL', 'int'], 'project_priority_name' => [$S(), 'string'],
+    'company_id' => ['BIGINT UNSIGNED NULL', 'int'], 'company_name' => [$S(), 'string'],
+    'company_url' => [$S(512), 'string'], 'user_id' => ['BIGINT UNSIGNED NULL', 'int'],
+    'company_ids' => ['JSON NULL', 'json'], 'user_ids' => ['JSON NULL', 'json'], 'task_ids' => ['JSON NULL', 'json'],
+    'template' => ['TINYINT(1) NULL', 'bool'], 'inherited_template' => ['TINYINT(1) NULL', 'bool'],
+    'repeatable' => ['TINYINT(1) NULL', 'bool'], 'repeater_id' => ['BIGINT UNSIGNED NULL', 'int'],
+    'repeat_kind' => [$S(32), 'string'], 'repeat_count' => ['INT NULL', 'int'],
+    'repeat_weekdays' => ['JSON NULL', 'json'], 'repeat_monthdays' => ['JSON NULL', 'json'],
+    'repeat_end' => [$S(32), 'string'], 'repeat_end_date' => ['DATE NULL', 'date'],
+    'repeat_end_count' => ['INT NULL', 'int'], 'repeat_from' => ['DATE NULL', 'date'],
+    'address' => ['JSON NULL', 'json'],
+    'trash' => ['TINYINT(1) NULL', 'bool'], 'trashed_at' => ['DATETIME NULL', 'datetime'],
+    'teams_created' => ['TINYINT(1) NULL', 'bool'], 'slack_created' => ['TINYINT(1) NULL', 'bool'],
+    'following' => ['TINYINT(1) NULL', 'bool'], 'comment_email' => [$S(), 'string'],
+    'privacy' => ['JSON NULL', 'json'], 'tags' => ['JSON NULL', 'json'], 'url' => [$S(512), 'string'],
+    'created_at' => ['DATETIME NULL', 'datetime'], 'updated_at' => ['DATETIME NULL', 'datetime'],
+    'last_update' => ['DATETIME NULL', 'datetime'],
+    'custom_fields' => ['JSON NULL', 'prefix_json:custom_column_'],
+];
+$cols = [];
+foreach ($P as $name => [$type, $cast]) {
+    $cols[$name] = [$type, $name, $cast];
+}
+$tables['projects'] = [
+    'table' => 'projects',
+    'columns' => $cols,
+    'indexes' => ['company_id', 'project_status_id', 'start_date', 'trash'],
+];
+
 return $tables;
