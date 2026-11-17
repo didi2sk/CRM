@@ -41,7 +41,10 @@ final class Syncer
                 $failed++;
                 $summary[$name] = 'CHYBA: ' . $e->getMessage();
             }
-            fwrite(STDOUT, sprintf("%-12s %s\n", $name, $summary[$name]));
+            echo sprintf("%-12s %s\n", $name, $summary[$name]);
+            if (PHP_SAPI !== 'cli') {
+                @flush();
+            }
         }
 
         $status = $failed === 0 ? 'ok' : ($failed < count($summary) ? 'partial' : 'failed');

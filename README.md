@@ -19,6 +19,16 @@ Cron (kazdu noc o 2:15):
 15 2 * * * php /cesta/caflou-backup/bin/sync.php >> /var/log/caflou-backup.log 2>&1
 ```
 
+## Spustenie cez web
+Do webrootu patri iba priecinok `public/` (document root = `public/`).
+`.env`, `src/`, `sql/` musia byt mimo neho. V `.env` nastav `RUN_KEY` (`php -r "echo bin2hex(random_bytes(24));"`).
+```
+https://tvoja-domena/run.php?key=RUN_KEY&init=1            # prve spustenie: vytvori tabulky
+https://tvoja-domena/run.php?key=RUN_KEY                   # vsetky entity
+https://tvoja-domena/run.php?key=RUN_KEY&entity=tasks      # len vybrane (oddelene ciarkou)
+```
+Pozor na casovy limit hostingu - pri velkej zalohe spustaj entitu po entite alebo pouzi cron.
+
 ## Ako to funguje
 - Kazdy zaznam sa ulozi ako plny JSON do `caflou_records` (`entity`, `remote_id`, `data`).
 - Upsert podla `data_hash` - meni sa len ak sa zmenil obsah (`updated_at`).
