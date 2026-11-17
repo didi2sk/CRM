@@ -29,6 +29,16 @@ https://tvoja-domena/run.php?key=RUN_KEY&entity=tasks      # len vybrane (oddele
 ```
 Pozor na casovy limit hostingu - pri velkej zalohe spustaj entitu po entite alebo pouzi cron.
 
+## Normalizovane tabulky (interne pouzitie)
+Definicie su v `config/tables.php` (zatial `companies`, dalsie entity pridavame postupne).
+```bash
+php bin/normalize.php --print-sql     # iba vypise CREATE TABLE
+php bin/normalize.php --init-tables   # vytvori tabulky
+php bin/normalize.php                 # prenesie data z caflou_records (upsert)
+```
+Poradie: `sync.php` (stiahne JSON) -> `normalize.php` (naplni tabulky). Casy su v UTC.
+Stlpce `deleted_in_source` a `synced_at` sa doplnaju automaticky.
+
 ## Ako to funguje
 - Kazdy zaznam sa ulozi ako plny JSON do `caflou_records` (`entity`, `remote_id`, `data`).
 - Upsert podla `data_hash` - meni sa len ak sa zmenil obsah (`updated_at`).
