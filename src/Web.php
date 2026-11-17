@@ -4,6 +4,9 @@ declare(strict_types=1);
 /** Pomocne funkcie pre webove rozhranie (escapovanie, formatovanie, layout). */
 final class Web
 {
+    /** Volitelne upozornenie nad obsahom (napr. vyzva na zmenu hesla). */
+    public static string $banner = '';
+
     public static function h(mixed $v): string
     {
         return htmlspecialchars((string) $v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -54,11 +57,16 @@ final class Web
                 $nav .= '<a href="' . self::url(['p' => $k]) . '"' . ($k === $active ? ' class="on"' : '') . '>' . $label . '</a>';
             }
             $nav .= '<form method="post" action="?p=logout" class="logout"><input type="hidden" name="csrf" value="'
-                . self::h($_SESSION['csrf'] ?? '') . '"><span>' . self::h($user) . '</span><button>Odhlásiť</button></form>';
+                . self::h($_SESSION['csrf'] ?? '') . '"><span>' . self::h($user) . '</span><a href="?p=password">Zmeniť heslo</a><button>Odhlásiť</button></form>';
+        }
+        $flash = '';
+        if (!empty($_SESSION['flash'])) {
+            $flash = '<div class="card ok">' . self::h($_SESSION['flash']) . '</div>';
+            unset($_SESSION['flash']);
         }
         echo '<!doctype html><html lang="sk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             . '<meta name="robots" content="noindex"><title>' . self::h($title) . ' – CRM</title><style>' . self::css() . '</style></head><body>'
-            . '<header><b>CRM</b><nav>' . $nav . '</nav></header><main>' . $body . '</main></body></html>';
+            . '<header><b>CRM</b><nav>' . $nav . '</nav></header><main>' . $flash . self::$banner . $body . '</main></body></html>';
     }
 
     private static function css(): string

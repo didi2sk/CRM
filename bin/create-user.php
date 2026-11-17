@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 // Pouzitie: php bin/create-user.php meno      (heslo sa spyta; pre existujuce meno ho zmeni)
 $root = dirname(__DIR__);
-foreach (['Env', 'CaflouClient', 'Syncer'] as $c) {
+foreach (['Env', 'CaflouClient', 'Syncer', 'CrmAuth'] as $c) {
     require "$root/src/$c.php";
 }
 
@@ -31,9 +31,10 @@ try {
 
     Env::load("$root/.env");
     $db = Syncer::connect();
-    $db->exec(file_get_contents("$root/sql/crm_users.sql"));
-    $db->prepare('INSERT INTO crm_users (username, password_hash, created_at) VALUES (?,?,UTC_TIMESTAMP())
-                  ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash)')
+    CrmAuth::ensureSchema($db);
+    // password_changed_at = NULL => pri prvom prihlaseni sa ponukne zmena hesla
+    $db->prepare('INSERT INTO crm_users (username, password_hash, created_at, password_changed_at) VALUES (?,?,UTC_TIMESTAMP(),NULL)
+                  ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash), password_changed_at = NULL')
         ->execute([$username, password_hash($pw, PASSWORD_DEFAULT)]);
     echo "Pouzivatel '$username' ulozeny.\n";
 } catch (Throwable $e) {
