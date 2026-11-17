@@ -18,7 +18,12 @@ final class TableNormalizer
         $cols[] = '  `synced_at` DATETIME NOT NULL';
         $cols[] = '  PRIMARY KEY (`id`)';
         foreach ($cfg['indexes'] ?? [] as $idx) {
-            $cols[] = "  KEY `idx_$idx` (`$idx`" . (stripos($cfg['columns'][$idx][0], 'VARCHAR') === 0 ? '(64)' : '') . ')';
+            // prefix indexu len pri dlhych VARCHAR (>191 znakov), inak MySQL hlasi chybu 1089/1071
+            $prefix = '';
+            if (preg_match('/^VARCHAR\((\d+)\)/i', $cfg['columns'][$idx][0], $m) && (int) $m[1] > 191) {
+                $prefix = '(191)';
+            }
+            $cols[] = "  KEY `idx_$idx` (`$idx`$prefix)";
         }
         return "CREATE TABLE IF NOT EXISTS `{$cfg['table']}` (\n" . implode(",\n", $cols)
             . "\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n";

@@ -78,8 +78,8 @@ CREATE TABLE IF NOT EXISTS `companies` (
   `deleted_in_source` TINYINT(1) NOT NULL DEFAULT 0,
   `synced_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_id_num` (`id_num`(64)),
-  KEY `idx_name` (`name`(64)),
+  KEY `idx_id_num` (`id_num`),
+  KEY `idx_name` (`name`(191)),
   KEY `idx_trash` (`trash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -216,8 +216,8 @@ CREATE TABLE IF NOT EXISTS `invoices` (
   `deleted_in_source` TINYINT(1) NOT NULL DEFAULT 0,
   `synced_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_kind` (`kind`(64)),
-  KEY `idx_number` (`number`(64)),
+  KEY `idx_kind` (`kind`),
+  KEY `idx_number` (`number`),
   KEY `idx_project_id` (`project_id`),
   KEY `idx_to_company_id` (`to_company_id`),
   KEY `idx_date_of_issue` (`date_of_issue`),
@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `deleted_in_source` TINYINT(1) NOT NULL DEFAULT 0,
   `synced_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_email` (`email`(64)),
+  KEY `idx_email` (`email`(191)),
   KEY `idx_active` (`active`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
