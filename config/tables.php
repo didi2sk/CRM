@@ -148,6 +148,7 @@ $tables['invoices'] = [
 $P = [
     'id' => ['BIGINT UNSIGNED NOT NULL', 'int'],
     'name' => [$S(), 'string'], 'description' => ['MEDIUMTEXT NULL', 'string'],
+    'description_original' => ['MEDIUMTEXT NULL', 'string'],
     'priority' => [$S(32), 'string'], 'record_reason' => ['TEXT NULL', 'string'],
     'order_number' => [$S(64), 'string'], 'currency' => [$S(8), 'string'],
     'planned_incomes' => ['DECIMAL(18,2) NULL', 'decimal'], 'native_planned_incomes' => ['DECIMAL(18,2) NULL', 'decimal'],
