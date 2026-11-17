@@ -1,4 +1,6 @@
 <?php
+// Cele v uzavretom rozsahu, aby premenne nepreteky do kodu, ktory tento subor nacita cez require.
+return (static function () {
 // Normalizovane tabulky: entita => ['table' => nazov, 'columns' => [stlpec => [typ, kluc v JSON, pretypovanie]]]
 // Pretypovanie: int | string | bool | decimal | datetime | json
 // Casy sa ukladaju v UTC (Caflou ich posiela s offsetom, napr. +02:00).
@@ -267,3 +269,4 @@ $tables['tasks'] = [
 ];
 
 return $tables;
+})();

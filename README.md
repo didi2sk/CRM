@@ -29,6 +29,15 @@ https://tvoja-domena/run.php?key=RUN_KEY&entity=tasks      # len vybrane (oddele
 ```
 Pozor na casovy limit hostingu - pri velkej zalohe spustaj entitu po entite alebo pouzi cron.
 
+## Webove CRM (len na citanie)
+Rozhranie je v `public/index.php`: prehlad, firmy, projekty, ulohy, doklady (hladanie, filtre, detaily so suvisiacimi zaznamami).
+Data cita z normalizovanych tabuliek (po `sync.php` + `normalize.php`). V Caflou nic nemeni.
+
+1. Vytvor pouzivatela (heslo min. 10 znakov): `php bin/create-user.php meno`
+2. **Document root webu nastav na `public/`** (napr. `/var/www/html/crm/public`). Ak to nejde, v Apache staci priložený `.htaccess`
+   (root zakaze vsetko, `public/` povoli); v nginx zakaz pristup mimo `public/`. Over, ze `https://domena/.env` vrati 403/404!
+3. Otvor `https://domena/` a prihlas sa. Pouzivajte HTTPS.
+
 ## Normalizovane tabulky (interne pouzitie)
 Definicie su v `config/tables.php` (zatial `companies`, `invoices`, `projects`, `users`, `tasks`; dalsie entity pridavame postupne).
 ```bash
