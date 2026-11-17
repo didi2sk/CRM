@@ -1,0 +1,34 @@
+# Caflou -> MySQL zaloha
+
+Cisty PHP (8.1+, ext-curl, ext-pdo_mysql), bez zavislosti.
+
+## Instalacia
+```bash
+cp .env.example .env        # dopln CAFLOU_ACCOUNT_ID, CAFLOU_TOKEN, DB_*
+mysql -e "CREATE DATABASE caflou_backup CHARACTER SET utf8mb4"
+php bin/sync.php --init-db  # vytvori tabulky
+```
+
+## Beh
+```bash
+php bin/sync.php            # vsetky entity
+php bin/sync.php tasks      # len vybrane
+```
+Cron (kazdu noc o 2:15):
+```
+15 2 * * * php /cesta/caflou-backup/bin/sync.php >> /var/log/caflou-backup.log 2>&1
+```
+
+## Ako to funguje
+- Kazdy zaznam sa ulozi ako plny JSON do `caflou_records` (`entity`, `remote_id`, `data`).
+- Upsert podla `data_hash` - meni sa len ak sa zmenil obsah (`updated_at`).
+- Zaznam, ktory v Caflou zmizol, sa nezmaze, iba sa oznaci `deleted_at`.
+- Priebeh a vysledok kazdeho behu: `caflou_sync_runs`.
+- Citanie: `SELECT JSON_EXTRACT(data,'$.name') FROM caflou_records WHERE entity='companies';`
+
+## Dolezite - over
+Struktura URL (`{base}/{account_id}/{entita}`), Bearer autorizacia, nazvy strankovacich
+parametrov a zoznam entit v `config/entities.php` su **odhad** a treba ich
+skontrolovat proti Postman dokumentacii Caflou API
+(https://documenter.getpostman.com/view/4786951/RWMFrTQC). Pripadne ich uprav v `.env`,
+`config/entities.php` alebo `CaflouClient::request()`.
