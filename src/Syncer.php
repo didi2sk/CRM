@@ -36,7 +36,8 @@ final class Syncer
             }
             try {
                 [$seen, $new, $changed, $deleted] = $this->syncEntity($name, $cfg, $runId);
-                $summary[$name] = "videnych=$seen, novych=$new, zmenenych=$changed, zmazanych=$deleted";
+                $summary[$name] = "videnych=$seen, novych=$new, zmenenych=$changed, zmazanych=$deleted, stranok={$this->client->lastPages}"
+                    . ($this->client->lastWarning ? ' VAROVANIE: ' . $this->client->lastWarning : '');
             } catch (Throwable $e) {
                 $failed++;
                 $summary[$name] = 'CHYBA: ' . $e->getMessage();

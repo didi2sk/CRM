@@ -31,11 +31,16 @@ final class CaflouClient
      * Generator: vracia po jednom zazname cez vsetky stranky.
      * @return Generator<array>
      */
+    public int $lastPages = 0;
+    public ?string $lastWarning = null;
+
     public function fetchAll(string $path, ?string $dataKey = null): Generator
     {
         $page = 1;
-        $prevFirstId = null;
-        while (true) {
+        $seen = [];
+        $this->lastPages = 0;
+        $this->lastWarning = null;
+        while ($page <= 100000) {
             $json = $this->request($path, [
                 $this->pageParam => $page,
                 $this->perPageParam => $this->perPage,
@@ -44,17 +49,24 @@ final class CaflouClient
             if (!$items) {
                 return;
             }
-            // ochrana: ak API ignoruje parameter stranky, vracia stale to iste
-            $firstId = $items[0]['id'] ?? md5(json_encode($items[0]));
-            if ($page > 1 && $firstId === $prevFirstId) {
-                return;
-            }
-            $prevFirstId = $firstId;
+            $this->lastPages = $page;
 
+            // Nezastavujeme podla poctu zaznamov (API moze vracat napr. pevnych 20 bez ohladu na per_page),
+            // ale az ked stranka je prazdna alebo neobsahuje ziadny novy zaznam.
+            $new = 0;
             foreach ($items as $item) {
+                $key = isset($item['id']) ? (string) $item['id'] : md5(json_encode($item));
+                if (isset($seen[$key])) {
+                    continue;
+                }
+                $seen[$key] = true;
+                $new++;
                 yield $item;
             }
-            if (count($items) < $this->perPage) {
+            if ($new === 0) {
+                if ($page === 2) {
+                    $this->lastWarning = "stranka 2 vratila tie iste zaznamy - API asi ignoruje parameter '{$this->pageParam}'";
+                }
                 return;
             }
             $page++;
